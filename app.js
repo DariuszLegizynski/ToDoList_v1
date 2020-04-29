@@ -5,34 +5,32 @@ const app = express();
 
 app.set("view engine", "ejs");
 
+app.use(bodyParser.urlencoded({extended: true}));
+
+let newlyAddedItems = ["Buy Food", "Cook Food", "Eat Food"];
+
 app.get("/", function(req, res){
     
     let today = new Date();
-    let currentDay = today.getDay();
-    let day = "";
 
-    if(currentDay === 0){
-        day = "sunday";
-    }else if(currentDay === 1){
-        day = "monday";
-    }else if(currentDay === 2){
-        day = "tuesday";
-    }else if(currentDay === 3){
-        day = "wednesday";
-    }else if(currentDay === 4){
-        day = "thursday";
-    }else if(currentDay === 5){
-        day = "friday";
-    }else if(currentDay === 6){
-        day = "saturday";
-    }else{
-        day = "you made it out of time. Please take care of yourself by yourself. Good Luck!";
-    }
+    let options = {
+        weekday: "long",
+        day: "numeric",
+        month: "long"
+    };
+
+    let day = today.toLocaleDateString("en-US", options);
     
-    res.render("list", {kindOfDay: day}); 
+    res.render("list", {kindOfDay: day, newListItems: newlyAddedItems}); 
 });
 
+app.post("/", function(req, res){
+    newItem = req.body.newItem;
 
+    newlyAddedItems.push(newItem);
+
+    res.redirect("/");
+})
 
 app.listen(3000, function(){
     console.log("Server started on port 3000");
